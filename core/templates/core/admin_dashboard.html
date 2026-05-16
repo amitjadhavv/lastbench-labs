@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - LastBench Labs{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Evaluator Pipeline</h2>
+        <span class="badge bg-primary fs-6">{{ evaluators.count }} Total Candidates</span>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-5">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Candidate</th>
+                        <th>Status</th>
+                        <th>Skills</th>
+                        <th>AI Score</th>
+                        <th>Applied On</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for profile in evaluators %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-dark">{{ profile.user.username }}</div>
+                                <div class="small text-muted">{{ profile.user.email }}</div>
+                            </td>
+                            <td>
+                                {% if profile.screening_status == 'VERIFIED' %}
+                                    <span class="badge bg-success">Verified</span>
+                                {% elif profile.screening_status == 'REJECTED' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% elif profile.screening_status == 'COMPLETED' %}
+                                    <span class="badge bg-info">Screened</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% for skill in profile.skills.all|slice:":3" %}
+                                    <span class="badge border text-dark bg-light">{{ skill.name }}</span>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% if profile.ai_screening_report %}
+                                    <div class="fw-bold text-primary">Report Ready</div>
+                                {% else %}
+                                    <span class="text-muted">In Progress</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ profile.created_at|date:"M d, Y" }}</td>
+                            <td class="text-end">
+                                <a href="{% url 'candidate_detail' profile.id %}" class="btn btn-outline-primary btn-sm">View Report</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">No candidates found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Admin Team</h2>
+        <span class="badge bg-dark fs-6">{{ staff_members.count }} Staff</span>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Staff Member</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for profile in staff_members %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-dark">{{ profile.user.username }}</div>
+                            </td>
+                            <td>{{ profile.user.email }}</td>
+                            <td><span class="badge bg-dark">Administrator</span></td>
+                            <td>{{ profile.user.date_joined|date:"M d, Y" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

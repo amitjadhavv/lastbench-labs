@@ -1,0 +1,84 @@
+# ========================
+# LastBench Labs .gitignore
+# ========================
+
+# ---- Python / Virtual Env ----
+myproj/
+venv/
+.venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+
+# ---- Django ----
+*.pyc
+db.sqlite3
+media/
+staticfiles/
+static_root/
+local_settings.py
+
+# ---- Environment Variables ----
+.env
+.env.local
+.env.*.local
+*.env
+
+# ---- PostgreSQL / DB ----
+*.dump
+*.sql.gz
+*.sqlite
+*.sqlite3
+*.db
+
+# ---- Auth0 / Secrets ----
+auth0-config.local.json
+*.pem
+*.key
+*.cert
+
+# ---- Node (if any frontend) ----
+node_modules/
+.next/
+out/
+dist/
+build/
+.pnp
+.pnp.js
+
+# ---- Logs ----
+logs/
+*.log
+npm-debug.log*
+
+# ---- Testing / Coverage ----
+coverage/
+.nyc_output/
+htmlcov/
+.pytest_cache/
+.tox/
+nosetests.xml
+
+# ---- OS Files ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Editor ----
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ---- Misc ----
+.cache/
+.turbo/
+*.tsbuildinfo
+.vercel
+.netlify

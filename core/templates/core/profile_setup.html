@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Complete Your Profile - LastBench Labs{% endblock %}
+
+{% block extra_css %}
+<style>
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        background: #fdfdfd;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #eee;
+    }
+    .skill-item {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        border-radius: 4px;
+        transition: background 0.2s;
+    }
+    .skill-item:hover {
+        background: #f0f7ff;
+    }
+    .skill-item input {
+        margin-right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-5">
+                    <h2 class="fw-bold mb-2">Step 2: Professional Profile</h2>
+                    <p class="text-muted mb-4">Tell us about your expertise and select the technical tasks you want to be screened for.</p>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Short Bio</label>
+                                <textarea name="bio" class="form-control" rows="3" placeholder="Tell us about your background in AI/ML..."></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Years of Experience</label>
+                                <input type="number" name="experience_years" class="form-control" min="0" value="0">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Portfolio URL</label>
+                                <input type="url" name="portfolio_url" class="form-control" placeholder="https://...">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">GitHub URL</label>
+                                <input type="url" name="github_url" class="form-control" placeholder="https://github.com/...">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">LinkedIn URL</label>
+                                <input type="url" name="linkedin_url" class="form-control" placeholder="https://linkedin.com/in/...">
+                            </div>
+                        </div>
+
+                        <h5 class="fw-bold mb-3">Select Your Specialized Skills</h5>
+                        <p class="small text-muted mb-3">The AI Screening Agent will focus its interview on these domains.</p>
+                        <div class="skills-grid mb-4">
+                            {% for skill in form.fields.skills.queryset %}
+                                <div class="skill-item">
+                                    <input type="checkbox" name="skills" value="{{ skill.id }}" id="skill_{{ skill.id }}">
+                                    <label for="skill_{{ skill.id }}">{{ skill.name }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Save & Start AI Screening</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

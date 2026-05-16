@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Screening - LastBench Labs{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chat-container {
+        height: 500px;
+        overflow-y: auto;
+        border: 1px solid #eee;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+    }
+    .message {
+        margin-bottom: 20px;
+        max-width: 80%;
+    }
+    .message-user {
+        margin-left: auto;
+        background: #0d6efd;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 15px 15px 0 15px;
+    }
+    .message-ai {
+        margin-right: auto;
+        background: #f1f0f0;
+        color: #333;
+        padding: 10px 15px;
+        border-radius: 15px 15px 15px 0;
+    }
+    .evaluation-card {
+        background: #e7f3ff;
+        border: 1px solid #b6d4fe;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-4">LastBench AI Screening Agent</h2>
+            
+            <div class="chat-container mb-4" id="chatWindow">
+                <div class="message message-ai">
+                    Hello! I'm the LastBench AI Screening Agent. I'll be conducting your technical interview today. Shall we begin?
+                </div>
+                
+                {% for msg in chat_history %}
+                    {% if msg.role == 'user' %}
+                        <div class="message message-user">
+                            {{ msg.parts.0 }}
+                        </div>
+                    {% else %}
+                        <div class="message message-ai">
+                            {{ msg.parts.0|linebreaks }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if not session.is_active %}
+                    <div class="evaluation-card text-center">
+                        <h4 class="fw-bold text-primary">Interview Completed!</h4>
+                        <p>Thank you for participating. Our AI Agent has submitted its report to the administrators.</p>
+                        <a href="{% url 'home' %}" class="btn btn-primary">Return Home</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if session.is_active %}
+                <form method="post" id="chatForm">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" name="message" class="form-control form-control-lg" placeholder="Type your response here..." required autofocus>
+                        <button class="btn btn-primary px-4" type="submit">Send</button>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-scroll to bottom of chat
+    const chatWindow = document.getElementById('chatWindow');
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+</script>
+{% endblock %}

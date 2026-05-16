@@ -1,0 +1,9 @@
+.git
+.env
+myproj
+__pycache__
+*.pyc
+db.sqlite3
+staticfiles
+.gemini
+node_modules

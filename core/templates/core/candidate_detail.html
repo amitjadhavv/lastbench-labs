@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Candidate Report - {{ candidate.user.username }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item active">Candidate Detail</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-3">{{ candidate.user.username }}</h4>
+                    <p class="text-muted">{{ candidate.bio|default:"No bio provided." }}</p>
+                    <hr>
+                    <div class="mb-3">
+                        <label class="small fw-bold text-uppercase text-muted">Email</label>
+                        <div>{{ candidate.user.email }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small fw-bold text-uppercase text-muted">Experience</label>
+                        <div>{{ candidate.experience_years }} Years</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small fw-bold text-uppercase text-muted">Links</label>
+                        <div class="mt-1">
+                            {% if candidate.linkedin_url %}<a href="{{ candidate.linkedin_url }}" class="btn btn-sm btn-outline-secondary me-1">LinkedIn</a>{% endif %}
+                            {% if candidate.github_url %}<a href="{{ candidate.github_url }}" class="btn btn-sm btn-outline-secondary">GitHub</a>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">Selected Skills</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for skill in candidate.skills.all %}
+                            <span class="badge bg-light text-dark border">{{ skill.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white p-3">
+                    <h5 class="mb-0">AI Screening Evaluation</h5>
+                </div>
+                <div class="card-body p-4">
+                    {% if candidate.ai_screening_report %}
+                        <div class="bg-light p-3 rounded border">
+                            {{ candidate.ai_screening_report|linebreaks }}
+                        </div>
+                    {% else %}
+                        <p class="text-center py-4 text-muted">No screening report available yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white p-3">
+                    <h5 class="mb-0">Full Interview Transcript</h5>
+                </div>
+                <div class="card-body p-4" style="max-height: 400px; overflow-y: auto;">
+                    {% if session %}
+                        {% for msg in session.chat_history %}
+                            <div class="mb-3">
+                                <span class="fw-bold {% if msg.role == 'model' %}text-primary{% else %}text-secondary{% endif %}">
+                                    {% if msg.role == 'model' %}AI Agent{% else %}Candidate{% endif %}:
+                                </span>
+                                <div class="mt-1 p-2 bg-light rounded">{{ msg.parts.0|linebreaksbr }}</div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-center py-4 text-muted">No interview transcripts found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
